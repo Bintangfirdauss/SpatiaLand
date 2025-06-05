@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peta - SPATIALAND</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    /* Enhanced navbar styles */
+    .search-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 20px;
+    }
+
+    .search-container .input-group {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border-radius: 25px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .search-container .input-group:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .search-container .form-control {
+      border: none;
+      background: rgba(255, 255, 255, 0.95);
+      font-size: 1.1rem;
+      padding: 12px 20px;
+      color: #333;
+      border-radius: 25px 0 0 25px;
+    }
+
+    .search-container .form-control:focus {
+      box-shadow: none;
+      background: white;
+      border-color: transparent;
+    }
+
+    .search-container .btn {
+      border: none;
+      background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+      color: #000;
+      font-weight: 600;
+      border-radius: 0 25px 25px 0;
+      transition: all 0.3s ease;
+    }
+
+    .search-container .btn:hover {
+      background: linear-gradient(135deg, #ff8c00 0%, #ffc107 100%);
+      transform: scale(1.05);
+    }
+
+    #map { width: 100%; height: 87vh; }
+
+    /* Custom Layer Control Styles */
+    .custom-layer-control {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      border-radius: 15px !important;
+      border: 2px solid rgba(102, 126, 234, 0.2) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+      padding: 8px !important;
+      min-width: 200px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .leaflet-control-layers-expanded {
+      padding: 15px 12px !important;
+    }
+
+    .leaflet-control-layers-list {
+      margin: 0 !important;
+    }
+
+    .leaflet-control-layers-base,
+    .leaflet-control-layers-overlays {
+      margin-bottom: 8px;
+    }
+
+    .leaflet-control-layers-base label,
+    .leaflet-control-layers-overlays label {
+      display: flex !important;
+      align-items: center;
+      padding: 8px 6px;
+      margin: 2px 0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #2d3748;
+    }
+
+    .leaflet-control-layers-base label:hover,
+    .leaflet-control-layers-overlays label:hover {
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateX(3px);
+    }
+
+    .leaflet-control-layers-base input,
+    .leaflet-control-layers-overlays input {
+      margin-right: 8px !important;
+      transform: scale(1.2);
+      accent-color: #667eea;
+    }
+
+    .leaflet-control-layers-separator {
+      height: 2px !important;
+      background: linear-gradient(90deg, transparent, #667eea, transparent) !important;
+      margin: 12px 0 !important;
+      border: none !important;
+    }
+
+    /* Layer Control Headers */
+    .leaflet-control-layers-base::before {
+      content: "🗺️ Peta Dasar";
+      display: block;
+      font-weight: 700;
+      color: #667eea;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .leaflet-control-layers-overlays::before {
+      content: "📊 Layer Data";
+      display: block;
+      font-weight: 700;
+      color: #667eea;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    /* Layer icons */
+    .leaflet-control-layers-overlays label:nth-child(2)::before { content: "🏛️ "; }
+    .leaflet-control-layers-overlays label:nth-child(3)::before { content: "🛣️ "; }
+    .leaflet-control-layers-overlays label:nth-child(4)::before { content: "🌊 "; }
+    .leaflet-control-layers-overlays label:nth-child(5)::before { content: "🏞️ "; }
+
+    .leaflet-control-layers-base label:nth-child(2)::before { content: "🌍 "; }
+    .leaflet-control-layers-base label:nth-child(3)::before { content: "🆘 "; }
+
+    /* Enhanced Legend Styles */
+    #legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(15px);
+      border: 2px solid rgba(102, 126, 234, 0.15);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 
+                  0 4px 12px rgba(102, 126, 234, 0.1);
+      z-index: 999;
+      max-width: 200px;
+      width: auto;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateY(0);
+    }
+
+    #legend:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 
+                  0 8px 20px rgba(102, 126, 234, 0.15);
+      border-color: rgba(102, 126, 234, 0.25);
+    }
+
+    #legend .legend-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 16px;
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #legend .legend-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: rotate(45deg);
+      transition: all 0.6s ease;
+      opacity: 0;
+    }
+
+    #legend:hover .legend-header::before {
+      animation: shimmer 1.5s ease-in-out;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+    }
+
+    #legend .legend-content {
+      padding: 14px 16px 16px 16px;
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    #legend img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      border: 1px solid rgba(102, 126, 234, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    #legend img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    #legend .legend-status {
+      margin-top: 8px;
+      padding: 6px 10px;
+      background: rgba(102, 126, 234, 0.05);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      text-align: center;
+      color: #667eea;
+      font-weight: 500;
+    }
+
+    #legend .error-state {
+      padding: 16px;
+      text-align: center;
+      color: #dc3545;
+      font-size: 0.85rem;
+      background: rgba(220, 53, 69, 0.05);
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+
+    #legend .error-state::before {
+      content: "⚠️";
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    #legend .loading-state {
+      padding: 20px;
+      text-align: center;
+      color: #667eea;
+      font-size: 0.85rem;
+    }
+
+    #legend .loading-state .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(102, 126, 234, 0.2);
+      border-top: 2px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px auto;
+    }
+
+    body.light-theme {
+      background-color: #ffffff;
+      color: #ffffff;
+    }
+
+    /* Enhanced Popup Styles */
+    .leaflet-popup-content {
+      max-width: 900px !important;
+      overflow: hidden;
+      margin: 0 !important;
+      border-radius: 12px;
+    }
+
+    .popup-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px 20px;
+      margin: -13px -20px 15px -20px;
+      border-radius: 12px 12px 0 0;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .popup-header h5 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .popup-content {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 0 5px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      padding: 10px 0;
+    }
+
+    .info-card {
+      background: #f8f9ff;
+      border: 1px solid #e1e5f2;
+      border-radius: 8px;
+      padding: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: #667eea;
+    }
+
+    .info-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      color: #2d3748;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .info-value.empty {
+      color: #a0aec0;
+      font-style: italic;
+    }
+
+    /* Responsive navbar */
+    @media (max-width: 768px) {
+      .navbar .container-fluid {
+        flex-direction: column !important;
+        gap: 15px;
+      }
+      
+      .search-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      
+      .navbar-brand {
+        margin-right: 0 !important;
+        margin-bottom: 10px;
+      }
+
+      .custom-layer-control {
+        min-width: 180px !important;
+        font-size: 0.85rem !important;
+      }
+
+      .leaflet-control-layers-base::before,
+      .leaflet-control-layers-overlays::before {
+        font-size: 0.75rem !important;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .leaflet-popup-content {
+        max-width: 280px !important;
+      }
+
+      #legend {
+        bottom: 10px;
+        left: 10px;
+        max-width: 160px;
+        font-size: 0.85rem;
+      }
+
+      #legend .legend-header {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+      }
+
+      #legend .legend-content {
+        padding: 10px 12px 12px 12px;
+      }
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Error message styles */
+    .error-message {
+      background: #fee;
+      border: 1px solid #fcc;
+      color: #c66;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .success-message {
+      background: #efe;
+      border: 1px solid #cfc;
+      color: #6c6;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark py-3" style="background-color: #0f0157;">
+    <div class="container-fluid">
+      <span class="navbar-brand me-4 fs-4 fw-bold">Peta Tanah Desa Klewor</span>
+      <div class="d-flex flex-grow-1 align-items-center justify-content-center">
+        <div class="search-container">
+          <div class="input-group">
+            <input type="text" id="search-input" class="form-control form-control-lg" placeholder="🔍 Cari NOP, NIK, atau Nama Pemilik">
+            <button class="btn btn-warning btn-lg fw-semibold px-4" onclick="searchTanah()">
+              <i>🔍</i> Cari
+            </button>
+          </div>
+        </div>
+      </div>
+      <a href="dashboard.html" class="btn btn-outline-light btn-lg ms-3">Logout</a>
+    </div>
+  </nav>
+  <div id="map"></div>
+  <div id="legend"></div>
+  <script>
+    // Error handling utilities
+    function showError(message, details = null) {
+      console.error('Error:', message, details);
+      Swal.fire({
+        icon: 'error',
+        title: 'Terjadi Kesalahan',
+        text: message,
+        footer: details ? `Detail: ${details}` : null
+      });
+    }
+
+    function showSuccess(message) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: message,
+        timer: 2000,
+        showConfirmButton: false
+      });
+    }
+
+    function showLoading(message = 'Memuat data...') {
+      Swal.fire({
+        title: message,
+        html: '<div class="loading-spinner"></div>',
+        showConfirmButton: false,
+        allowOutsideClick: false
+      });
+    }
+
+    // Enhanced popup content generator
+    function createPopupContent(properties) {
+      if (!properties || Object.keys(properties).length === 0) {
+        return `
+          <div class="popup-header">
+            <h5>📍 Informasi Lokasi</h5>
+          </div>
+          <div class="error-message">
+            Tidak ada data tersedia untuk lokasi ini
+          </div>
+        `;
+      }
+
+      // Field mapping untuk label yang lebih friendly
+      const fieldLabels = {
+        'd_nop': 'NOP',
+        'nik': 'NIK',
+        'nama_wp': 'Nama Pemilik',
+        'luas_tanah': 'Luas Tanah',
+        'alamat': 'Alamat',
+        'status_tanah': 'Status',
+        'jenis_tanah': 'Jenis Tanah',
+        'koordinat_x': 'Koordinat X',
+        'koordinat_y': 'Koordinat Y'
+      };
+
+      let content = `
+        <div class="popup-header">
+          <h5>📍 Informasi Bidang Tanah</h5>
+        </div>
+        <div class="popup-content">
+          <div class="info-grid">
+      `;
+
+      // Generate info cards
+      for (const [key, value] of Object.entries(properties)) {
+        const label = fieldLabels[key] || key.replace(/_/g, ' ').toUpperCase();
+        const displayValue = value != null && value !== '' ? value : 'Tidak tersedia';
+        const isEmpty = value == null || value === '';
+
+        content += `
+          <div class="info-card">
+            <div class="info-label">${label}</div>
+            <div class="info-value ${isEmpty ? 'empty' : ''}">${displayValue}</div>
+          </div>
+        `;
+      }
+
+      content += `
+          </div>
+        </div>
+      `;
+
+      return content;
+    }
+
+    function initMap() {
+      try {
+        var map = L.map('map').setView([-7.309402, 110.752620], 15);
+        
+        var osmDefault = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; OpenStreetMap contributors',
+          errorTileUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkVycm9yPC90ZXh0Pjwvc3ZnPg=='
+        }).addTo(map);
+
+        var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team'
+        });
+
+        // WMS layers with error handling
+        var wmsLayer1 = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+          layers: "administrasi_desaklewor",
+          format: "image/png",
+          transparent: true
+        }).addTo(map);
+
+        var wmsLayer2 = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+          layers: "jalan_desaklewor",
+          format: "image/png",
+          transparent: true
+        }).addTo(map);
+
+        var wmsLayer3 = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+          layers: "sungai_desaklewor",
+          format: "image/png",
+          transparent: true
+        }).addTo(map);
+
+        var wmsLayer4 = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+          layers: "ne:bidang_tanah_klewor2",
+          format: "image/png",
+          transparent: true
+        }).addTo(map);
+
+        // Enhanced Legend with loading state
+        const legendUrl = "http://localhost:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=bidang_tanah_klewor2";
+        
+        // Show loading state first
+        document.getElementById("legend").innerHTML = `
+          <div class="legend-header">
+            📋 Legenda
+          </div>
+          <div class="legend-content">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              Memuat legenda...
+            </div>
+          </div>
+        `;
+
+        const legendImg = new Image();
+        legendImg.onload = function() {
+          document.getElementById("legend").innerHTML = `
+            <div class="legend-header">
+              📋 Legenda
+            </div>
+            <div class="legend-content">
+              <img src="${legendUrl}" alt="Legenda Bidang Tanah">
+              <div class="legend-status">Bidang Tanah Klewor</div>
+            </div>
+          `;
+        };
+        legendImg.onerror = function() {
+          document.getElementById("legend").innerHTML = `
+            <div class="legend-header">
+              📋 Legenda
+            </div>
+            <div class="legend-content">
+              <div class="error-state">
+                Gagal memuat legenda
+              </div>
+            </div>
+          `;
+        };
+        legendImg.src = legendUrl;
+
+        var basemap = {
+          "OpenStreetMap": osmDefault,
+          "OpenStreetMap Humanitarian": osmHOT
+        };
+        var overlaymap = {
+          "Batas Administrasi": wmsLayer1,
+          "Jalan": wmsLayer2,
+          "Sungai": wmsLayer3,
+          "Bidang Tanah": wmsLayer4
+        };
+        // Custom layer control with enhanced styling
+        var layerControl = L.control.layers(basemap, overlaymap, {
+          position: 'topright',
+          collapsed: false
+        }).addTo(map);
+
+        // Style the layer control after it's added
+        setTimeout(() => {
+          const layerControlDiv = document.querySelector('.leaflet-control-layers');
+          if (layerControlDiv) {
+            layerControlDiv.classList.add('custom-layer-control');
+          }
+        }, 100);
+
+        // Enhanced click handler with better error handling
+        map.on('click', function (e) {
+          const pos = e.latlng;
+          const pt = map.latLngToContainerPoint(pos);
+          const size = map.getSize();
+          const bounds = map.getBounds();
+
+          // Show loading popup immediately
+          L.popup({ maxWidth: 300 })
+            .setLatLng(pos)
+            .setContent(`
+              <div class="popup-header">
+                <h5>⏳ Memuat Data...</h5>
+              </div>
+              <div style="text-align: center; padding: 20px;">
+                <div class="loading-spinner"></div>
+                <p style="margin-top: 10px; color: #666;">Mengambil informasi lokasi</p>
+              </div>
+            `)
+            .openOn(map);
+
+          $.ajax({
+            url: "/geoserver/wms",
+            method: "GET",
+            timeout: 10000, // 10 second timeout
+            data: {
+              service: "WMS",
+              version: "1.1.1",
+              request: "GetFeatureInfo",
+              info_format: "application/json",
+              layers: "ne:bidang_tanah_klewor2",
+              query_layers: "ne:bidang_tanah_klewor2",
+              width: size.x,
+              height: size.y,
+              x: Math.round(pt.x),
+              y: Math.round(pt.y),
+              bbox: bounds.toBBoxString()
+            },
+            success: function (data) {
+              try {
+                if (data && data.features && data.features.length > 0) {
+                  const props = data.features[0].properties;
+                  const content = createPopupContent(props);
+                  
+                  L.popup({ maxWidth: 900 })
+                    .setLatLng(pos)
+                    .setContent(content)
+                    .openOn(map);
+                } else {
+                  L.popup({ maxWidth: 400 })
+                    .setLatLng(pos)
+                    .setContent(`
+                      <div class="popup-header">
+                        <h5>ℹ️ Informasi Lokasi</h5>
+                      </div>
+                      <div style="text-align: center; padding: 20px; color: #666;">
+                        Tidak ada data bidang tanah di lokasi ini
+                      </div>
+                    `)
+                    .openOn(map);
+                }
+              } catch (parseError) {
+                console.error('Error parsing response:', parseError);
+                showError('Gagal memproses data dari server', parseError.message);
+              }
+            },
+            error: function(xhr, status, error) {
+              console.error('AJAX Error:', status, error);
+              let errorMessage = 'Gagal mengambil data dari server';
+              
+              if (status === 'timeout') {
+                errorMessage = 'Koneksi timeout - server tidak merespons';
+              } else if (status === 'parsererror') {
+                errorMessage = 'Data dari server tidak valid';
+              } else if (xhr.status === 404) {
+                errorMessage = 'Service tidak ditemukan';
+              } else if (xhr.status === 500) {
+                errorMessage = 'Kesalahan internal server';
+              }
+
+              L.popup({ maxWidth: 400 })
+                .setLatLng(pos)
+                .setContent(`
+                  <div class="popup-header" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);">
+                    <h5>❌ Kesalahan</h5>
+                  </div>
+                  <div class="error-message">
+                    ${errorMessage}
+                  </div>
+                `)
+                .openOn(map);
+            }
+          });
+        });
+
+      } catch (mapError) {
+        console.error('Map initialization error:', mapError);
+        showError('Gagal menginisialisasi peta', mapError.message);
+      }
+    }
+
+    async function searchTanah() {
+      const query = document.getElementById("search-input").value.trim();
+      if (!query) {
+        Swal.fire({ 
+          icon: 'warning', 
+          title: 'Input Kosong',
+          text: 'Silakan masukkan NOP, NIK, atau Nama untuk mencari.' 
+        });
+        return;
+      }
+
+      showLoading('Mencari data...');
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+        const res = await fetch(`api.php/search?q=${encodeURIComponent(query)}`, {
+          method: 'GET',
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+
+        if (data.success && data.results && data.results.length > 0) {
+          let content = `
+            <div class='table-responsive'>
+              <table class='table table-striped table-bordered table-hover table-sm'>
+                <thead class="table-primary">
+                  <tr>
+                    <th>NOP</th>
+                    <th>NIK</th>
+                    <th>Nama Pemilik</th>
+                  </tr>
+                </thead>
+                <tbody>
+          `;
+
+          data.results.forEach(item => {
+            content += `<tr>
+              <td>${item.d_nop || '-'}</td>
+              <td>${item.nik || '-'}</td>
+              <td>${item.nama_wp || '-'}</td>
+            </tr>`;
+          });
+
+          content += `</tbody></table></div>`;
+
+          Swal.fire({
+            title: `📋 Hasil Pencarian (${data.results.length} data)`,
+            html: content,
+            width: '70%',
+            confirmButtonText: 'Tutup',
+            confirmButtonColor: '#667eea'
+          });
+        } else {
+          Swal.fire({ 
+            icon: 'info', 
+            title: 'Tidak Ditemukan',
+            text: `Tidak ada hasil untuk "${query}". Coba kata kunci lain.` 
+          });
+        }
+      } catch (err) {
+        console.error('Search error:', err);
+        let errorMessage = 'Terjadi kesalahan saat mencari data';
+        
+        if (err.name === 'AbortError') {
+          errorMessage = 'Pencarian timeout - coba lagi';
+        } else if (err.message.includes('HTTP')) {
+          errorMessage = `Server error: ${err.message}`;
+        } else if (err.message.includes('Failed to fetch')) {
+          errorMessage = 'Tidak dapat terhubung ke server';
+        }
+
+        Swal.fire({ 
+          icon: 'error', 
+          title: 'Pencarian Gagal',
+          text: errorMessage 
+        });
+      }
+    }
+
+    // Initialize map when page loads
+    window.onload = function() {
+      try {
+        initMap();
+      } catch (error) {
+        console.error('Failed to initialize:', error);
+        showError('Gagal memuat aplikasi', error.message);
+      }
+    };
+
+    function setTheme(mode) {
+      try {
+        if (mode === 'dark') {
+          document.body.classList.remove('light-theme');
+          document.body.classList.add('dark-theme');
+        } else {
+          document.body.classList.remove('dark-theme');
+          document.body.classList.add('light-theme');
+        }
+        localStorage.setItem("theme", mode);
+      } catch (error) {
+        console.error('Theme setting error:', error);
+      }
+    }
+
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && document.activeElement.id === 'search-input') {
+        searchTanah();
+      }
+    });
+  </script>
+</body>
+</html>
