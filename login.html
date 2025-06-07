@@ -138,10 +138,12 @@
   </div>
 
 <script>
+const BASE_URL = "http://localhost:3000"; // ganti jika backend di-host online
+
 async function login() {
   const user = document.getElementById("username").value.trim();
   const pass = document.getElementById("password").value.trim();
-  const res = await fetch("api.php/login", {
+  const res = await fetch(`${BASE_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username: user, password: pass })
@@ -169,13 +171,13 @@ async function registerAccount() {
     Swal.fire('Lengkapi', 'Username dan password baru harus diisi.', 'warning');
     return;
   }
-  const res = await fetch("api.php/register", {
+  const res = await fetch(`${BASE_URL}/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username: newUser, password: newPass })
   });
   const data = await res.json();
-  if (data.success) {
+  if (data.message === "Registrasi berhasil") {
     Swal.fire('Berhasil', 'Akun berhasil dibuat! Silakan login.', 'success');
     showLoginForm();
   } else {
