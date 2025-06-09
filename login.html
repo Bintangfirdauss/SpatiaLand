@@ -137,71 +137,62 @@
     </div>
   </div>
 
-<script>
-const BASE_URL = "https://spatialand-backend-production.up.railway.app";
-
-async function login() {
-  const user = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
-  
-  try {
-    const res = await fetch(`${BASE_URL}/login`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  credentials: "include", // penting
-  body: JSON.stringify({ username: user, password: pass })
-});
-    const data = await res.json();
-
-    if (res.ok && data.success) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Login Berhasil!',
-        text: 'Selamat datang di SPATIALAND.',
-        timer: 2000,
-        showConfirmButton: false
-      }).then(() => {
-        window.location.href = "peta.html";
-      });
-    } else {
-      document.getElementById("login-message").innerText = data.message || "Login gagal.";
+  <script>
+    function login() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+    
+      const storedUser = sessionStorage.getItem("username");
+      const storedPass = sessionStorage.getItem("password");
+    
+      if (user === storedUser && pass === storedPass) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Login Berhasil!',
+          text: 'Selamat datang di SPATIALAND.',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          window.location.href = "https://bintangfirdauss.github.io/SpatiaLandd/";
+        });
+      } else {
+        document.getElementById("login-message").innerText = "Username atau password salah.";
+      }
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    document.getElementById("login-message").innerText = "Terjadi kesalahan saat menghubungi server.";
-  }
-}
-
-async function registerAccount() {
-  const newUser = document.getElementById("new-username").value.trim();
-  const newPass = document.getElementById("new-password").value.trim();
-
-  if (!newUser || !newPass) {
-    Swal.fire('Lengkapi', 'Username dan password baru harus diisi.', 'warning');
-    return;
-  }
-
-  try {
-    const res = await fetch(`${BASE_URL}/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: newUser, password: newPass }),
-      credentials: "include"
-    });
-
-    const data = await res.json();
-
-    if (res.ok && data.message === "Registrasi berhasil") {
+    
+    function registerAccount() {
+      const newUser = document.getElementById("new-username").value.trim();
+      const newPass = document.getElementById("new-password").value.trim();
+    
+      if (!newUser || !newPass) {
+        Swal.fire('Lengkapi', 'Username dan password baru harus diisi.', 'warning');
+        return;
+      }
+    
+      sessionStorage.setItem("username", newUser);
+      sessionStorage.setItem("password", newPass);
+    
       Swal.fire('Berhasil', 'Akun berhasil dibuat! Silakan login.', 'success');
       showLoginForm();
-    } else {
-      document.getElementById("login-message").innerText = data.message || "Gagal mendaftar akun.";
     }
-  } catch (error) {
-    console.error("Register error:", error);
-    document.getElementById("login-message").innerText = "Terjadi kesalahan saat menghubungi server.";
-  }
-}
-</script>
-</body>
-</html>
+    
+    function showRegisterForm() {
+      document.getElementById("form-title").innerText = "Registrasi Akun";
+      document.getElementById("username").style.display = "none";
+      document.getElementById("password").style.display = "none";
+      document.querySelector("button[onclick='login()']").style.display = "none";
+      document.querySelector("button[onclick='showRegisterForm()']").style.display = "none";
+      document.getElementById("register-form").style.display = "block";
+      document.getElementById("login-message").innerText = "";
+    }
+    
+    function showLoginForm() {
+      document.getElementById("form-title").innerText = "Login";
+      document.getElementById("username").style.display = "block";
+      document.getElementById("password").style.display = "block";
+      document.querySelector("button[onclick='login()']").style.display = "block";
+      document.querySelector("button[onclick='showRegisterForm()']").style.display = "block";
+      document.getElementById("register-form").style.display = "none";
+    }
+    </script>
+    
