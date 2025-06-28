@@ -126,16 +126,35 @@
     footer a:hover {
       color: #f6c23e;
     }
+
     .navbar-toggler-icon {
-    background-image: url('images/ikon.png') !important;
-    background-size: cover;
-    background-position: center;
-    width: 1.5em;
-    height: 1.5em;
-    background-repeat: no-repeat;
-}
+      background-image: url('images/ikon.png') !important;
+      background-size: cover;
+      background-position: center;
+      width: 1.5em;
+      height: 1.5em;
+      background-repeat: no-repeat;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-brand i {
+      background-image: url('images/ikon.png') !important;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 1.5em;
+      height: 1.5em;
+      margin-right: 0.5em;
+      display: inline-block;
+    }
+
+    .navbar-brand .bi-globe {
+      display: none;
+    }
   </style>
-  
 </head>
 <body>
 
@@ -182,7 +201,6 @@
   <!-- Statistik dan Quick Links -->
   <div class="container mb-5">
     <div class="row g-4 justify-content-center">
-
       <div class="col-md-4">
         <div class="stat-card text-center">
           <i class="bi bi-geo-alt stat-icon"></i>
@@ -190,7 +208,6 @@
           <p>Bidang Tanah Tercatat</p>
         </div>
       </div>
-
       <div class="col-md-4">
         <div class="stat-card text-center">
           <i class="bi bi-card-checklist stat-icon"></i>
@@ -198,7 +215,6 @@
           <p>Jumlah Sertifikat Diterbitkan</p>
         </div>
       </div>
-
       <div class="col-md-4">
         <div class="content-box">
           <h5 class="mb-3">Quick Links</h5>
@@ -208,7 +224,6 @@
           <a href="download.html" class="quick-link"><i class="bi bi-download"></i> Download Data</a>
         </div>
       </div>
-
     </div>
   </div>
 
