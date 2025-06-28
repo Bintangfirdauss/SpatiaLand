@@ -141,7 +141,7 @@
       align-items: center;
     }
 
-    .navbar-brand i {
+    .navbar-brand .i {
       background-image: url('images/ikon.png') !important;
       background-size: contain;
       background-repeat: no-repeat;
@@ -152,13 +152,7 @@
     }
 
     .navbar-brand .bi-globe {
-      background-image: url('images/ikon.png') !important;
-      background-size: contain;
-      background-repeat: no-repeat;
-      width: 24px; /* Ukuran default, sesuaikan jika perlu */
-      height: 24px; /* Ukuran default, sesuaikan jika perlu */
-      margin-right: 0.5em;
-      display: inline-block;
+display: none; /* Menyembunyikan ikon globe default */
     }
   </style>
 </head>
@@ -176,7 +170,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0f0157;">
     <div class="container-fluid">
-      <a class="navbar-brand" href="index.html"><i class="bi bi-globe"></i> SPATIALAND</a>
+      <a class="navbar-brand" href="index.html"><i class="bi i"></i> SPATIALAND</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
