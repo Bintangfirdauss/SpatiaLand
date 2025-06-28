@@ -101,6 +101,30 @@
       padding: 1.5rem;
       box-shadow: 0 6px 12px rgba(0,0,0,0.25);
     }
+
+    footer {
+      background-color: #0f0157;
+      padding: 2rem 0;
+      color: #fff;
+      z-index: 1000;
+      position: relative;
+    }
+
+    footer .content-box {
+      background-color: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: #f6c23e;
+    }
   </style>
 </head>
 <body>
@@ -189,6 +213,22 @@
       </div>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="content-box text-center">
+            <h5 class="mb-3">Kontak Kami</h5>
+            <p><i class="bi bi-envelope-fill me-2"></i><a href="mailto:info@spatialand.id">info@spatialand.id</a></p>
+            <p><i class="bi bi-telephone-fill me-2"></i><a href="tel:+6281234567890">+62 812-3456-7890</a></p>
+            <p><i class="bi bi-geo-alt-fill me-2"></i>Jl. Raya Klewor No. 123, Desa Klewor, Indonesia</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <!-- Script -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
