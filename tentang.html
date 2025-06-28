@@ -94,11 +94,34 @@
     }
 
     .table-transparent thead th {
-  color: #ffffff !important; /* warna kuning terang */
-  font-weight: bold;
-  text-transform: uppercase;
-}
+      color: #ffffff !important;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
 
+    footer {
+      background-color: #0f0157;
+      padding: 2rem 0;
+      color: #fff;
+      z-index: 1000;
+      position: relative;
+    }
+
+    footer .content-box {
+      background-color: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: #f6c23e;
+    }
   </style>
 </head>
 <body>
@@ -152,32 +175,32 @@
             </thead>
             <tbody>
               <tr>
-                <td class="foto-anggota"><img src="images/Bintang.JPG" alt="Foto Budi Santoso" class="team-photo"></td>
+                <td class="foto-anggota"><img src="images/Bintang.JPG" alt="Foto Bintang" class="team-photo"></td>
                 <td class="nama-anggota">Mohammad Bintang Firdaus Sanyoto</td>
                 <td class="peran-anggota">Koordinator Tim</td>
               </tr>
               <tr>
-                <td class="foto-anggota"><img src="images/Saffa.JPG" alt="Foto Ani Rahayu" class="team-photo"></td>
+                <td class="foto-anggota"><img src="images/Saffa.JPG" alt="Foto Saffa" class="team-photo"></td>
                 <td class="nama-anggota">Saffa Zahra Afrilia</td>
                 <td class="peran-anggota">Desainer UI/UX</td>
               </tr>
               <tr>
-                <td class="foto-anggota"><img src="images/Patrish.JPG" alt="Foto Citra Dewi" class="team-photo"></td>
+                <td class="foto-anggota"><img src="images/Patrish.JPG" alt="Foto Patrish" class="team-photo"></td>
                 <td class="nama-anggota">Patrishia Stephani P. Sitorus</td>
                 <td class="peran-anggota">Desainer Grafis</td>
               </tr>
               <tr>
-                <td class="foto-anggota"><img src="images/Selsy.jpg" alt="Foto Dedi Pratama" class="team-photo"></td>
+                <td class="foto-anggota"><img src="images/Selsy.jpg" alt="Foto Selsyana" class="team-photo"></td>
                 <td class="nama-anggota">Selsyana Camelia Amarta</td>
                 <td class="peran-anggota">Analis Data</td>
               </tr>
               <tr>
-                <td class="foto-anggota"><img src="images/Tata.jpg" alt="Foto Eko Wijaya" class="team-photo"></td>
+                <td class="foto-anggota"><img src="images/Tata.jpg" alt="Foto Desta" class="team-photo"></td>
                 <td class="nama-anggota">Desta Hurun Ainiyah</td>
                 <td class="peran-anggota">Pengembang WEB</td>
               </tr>
               <tr>
-                <td class="foto-anggota"><img src="images/Hilmy.jpg" alt="Foto Eko Wijaya" class="team-photo"></td>
+                <td class="foto-anggota"><img src="images/Hilmy.jpg" alt="Foto Hilmy" class="team-photo"></td>
                 <td class="nama-anggota">Hilmy Ahmad Mujahid</td>
                 <td class="peran-anggota">Spesialis GIS</td>
               </tr>
@@ -187,6 +210,22 @@
       </div>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="content-box text-center">
+            <h5 class="mb-3">Kontak Kami</h5>
+            <p><i class="bi bi-envelope-fill me-2"></i><a href="mailto:info@spatialand.id">info@spatialand.id</a></p>
+            <p><i class="bi bi-telephone-fill me-2"></i><a href="tel:+6281234567890">+62 812-3456-7890</a></p>
+            <p><i class="bi bi-geo-alt-fill me-2"></i>Jl. Raya Klewor No. 1, Desa Klewor, Kecamatan Kemusu, Kabupaten Boyolali, Jawa Tengah</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <!-- Script -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
